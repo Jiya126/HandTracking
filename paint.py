@@ -5,7 +5,7 @@ import os
 import handTrackModule as htm
 
 #######################
-brushThickness = 25
+brushThickness = 15
 eraserThickness = 100
 ########################
 
@@ -25,13 +25,13 @@ eraserThickness = 100
 
 drawColor = (255, 0, 255)
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 cap.set(3, 1280)
 cap.set(4, 720)
 
 detector = htm.handDetector()
 xp, yp = 0, 0
-imgCanvas = np.zeros((720, 1280, 3), np.uint8)
+imgCanvas = np.zeros((480, 800, 3), np.uint8)
 
 while True:
 
@@ -110,6 +110,9 @@ while True:
     imgGray = cv2.cvtColor(imgCanvas, cv2.COLOR_BGR2GRAY)
     _, imgInv = cv2.threshold(imgGray, 50, 255, cv2.THRESH_BINARY_INV)
     imgInv = cv2.cvtColor(imgInv,cv2.COLOR_GRAY2BGR)
+    # print(img.shape)
+    # print(imgCanvas.shape)
+    # print(imgInv.shape)
     img = cv2.bitwise_and(img,imgInv)
     img = cv2.bitwise_or(img,imgCanvas)
 
