@@ -20,8 +20,8 @@ eraserThickness = 100
 # print(len(overlayList))
 # header = overlayList[0]
 
-path = './headImg.png'
-overlayImg = cv2.imread(path)
+# path = './headImg.png'
+# overlayImg = cv2.imread(path)
 
 drawColor = (255, 0, 255)
 
@@ -39,7 +39,7 @@ while True:
     success, img = cap.read()
     img = cv2.flip(img, 1)
 
-    img[0:120, 0:1280] = overlayImg
+    # img[0:120, 0:1280] = overlayImg
 
     # 2. Find Hand Landmarks
     img = detector.detectHands(img)
@@ -52,38 +52,49 @@ while True:
         
         fingers = detector.detectUp()
         
-        if fingers[1] and fingers[2]:
+        if fingers[1] and fingers[2] and fingers[3]:
             xp, yp = 0, 0
-            print("Selection Mode")
+            drawColor = (0,0,0)
+            print('eraser mode')
+            cv2.rectangle(img, (x1, y1 - 35), (x2, y2 + 35), drawColor, cv2.FILLED)
+            if xp == 0 and yp == 0:
+                xp, yp = x1, y1
+            # print("Selection Mode")
             
-            if y1 < 120:
-                if 250 < x1 < 450:
-                    drawColor = (255, 0, 255)
-                elif 780 < x1 < 1000:
-                    drawColor = (0, 0, 0)
-            cv2.rectangle(img, (x1, y1 - 25), (x2, y2 + 25), drawColor, cv2.FILLED)
+            # if y1 < 120:
+            #     if 250 < x1 < 450:
+            #         drawColor = (255, 0, 255)
+            #     elif 780 < x1 < 1000:
+            #         drawColor = (0, 0, 0)
+            cv2.line(imgCanvas, (xp, yp), (x1, y1), drawColor, eraserThickness)
+
 
         # 5. If Drawing Mode - Index finger is up
         # drawColor = (255,0,255)
         if fingers[1] and fingers[2] == False:
-            # drawColor = (255,0,255)
+            drawColor = (255,0,255)
             cv2.circle(img, (x1, y1), 15, drawColor, cv2.FILLED)
             print("Drawing Mode")
             if xp == 0 and yp == 0:
                 xp, yp = x1, y1
 
-            if drawColor == (0, 0, 0):
-                cv2.line(img, (xp, yp), (x1, y1), drawColor, eraserThickness)
-                cv2.line(imgCanvas, (xp, yp), (x1, y1), drawColor, eraserThickness)
+            # if drawColor == (0, 0, 0):
+            #     cv2.line(img, (xp, yp), (x1, y1), drawColor, eraserThickness)
+            #     cv2.line(imgCanvas, (xp, yp), (x1, y1), drawColor, eraserThickness)
             
-            else:
-                cv2.line(img, (xp, yp), (x1, y1), drawColor, brushThickness)
-                cv2.line(imgCanvas, (xp, yp), (x1, y1), drawColor, brushThickness)
+            # else:
+            #     cv2.line(img, (xp, yp), (x1, y1), drawColor, brushThickness)
+            #     cv2.line(imgCanvas, (xp, yp), (x1, y1), drawColor, brushThickness)
 
 
-            # cv2.line(imgCanvas, (xp, yp), (x1, y1), drawColor, brushThickness)
+            cv2.line(imgCanvas, (xp, yp), (x1, y1), drawColor, brushThickness)
 
             xp, yp = x1, y1
+
+        if fingers[1] and fingers[2] and fingers[3] == False:
+            xp, yp = 0,0
+            drawColor = (255,255,255)
+            print('off mode')
 
         # elif fingers[1] == False and fingers[2]:
         #     drawColor = (0,0,0)
@@ -106,8 +117,8 @@ while True:
 
     
     cv2.imshow("Image", img)
-    cv2.imshow("Canvas", imgCanvas)
-    cv2.imshow("Inv", imgInv)
+    # cv2.imshow("Canvas", imgCanvas)
+    # cv2.imshow("Inv", imgInv)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 cap.release()
