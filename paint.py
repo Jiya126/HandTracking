@@ -20,8 +20,8 @@ eraserThickness = 100
 # print(len(overlayList))
 # header = overlayList[0]
 
-# path = './headImg.png'
-# overlayImg = cv2.imread(path)
+path = './logo.jpeg'
+overlayImg = cv2.imread(path)
 
 drawColor = (255, 0, 255)
 
@@ -39,7 +39,7 @@ while True:
     success, img = cap.read()
     img = cv2.flip(img, 1)
 
-    # img[0:120, 0:1280] = overlayImg
+    img[0:715, 0:1213] = overlayImg
 
     # 2. Find Hand Landmarks
     img = detector.detectHands(img)
