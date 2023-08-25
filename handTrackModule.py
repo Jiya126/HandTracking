@@ -40,7 +40,7 @@ class handDetector():
                     # print(id,cx,cy)
                     self.lmList.append([id,cx,cy])
                     if drawY:
-                        cv2.circle(img, (cx,cy), 10, (255,255,0), cv2.FILLED)
+                        cv2.circle(img, (cx,cy), 4, (0,0,0), cv2.FILLED)
 
         return self.lmList     
 
@@ -64,34 +64,34 @@ class handDetector():
 
 
 
-def main():
-    cTime = 0 
-    pTime = 0
+# def main():
+#     cTime = 0 
+#     pTime = 0
 
-    cam = cv2.VideoCapture(0)
-    detector = handDetector()
+#     cam = cv2.VideoCapture(0)
+#     detector = handDetector()
 
-    while True:
-        var, img = cam.read()
+#     while True:
+#         var, img = cam.read()
 
-        img = detector.detectHands(img, drawY=False)  
-        lmList = detector.detectPos(img, drawY=False)
+#         img = detector.detectHands(img, drawY=False)  
+#         lmList = detector.detectPos(img, drawY=False)
         
-        if len(lmList) != 0:
-            fingersList = detector.detectUp()
-            print(fingersList)     
+#         if len(lmList) != 0:
+#             fingersList = detector.detectUp()
+#             print(fingersList)     
 
-        cTime = time.time()
-        fps = 1/(cTime - pTime)
-        pTime = cTime
-        cv2.putText(img, str(int(fps)), (15,32), cv2.FONT_HERSHEY_PLAIN, 3, (255,0,0), 3)        
+#         cTime = time.time()
+#         fps = 1/(cTime - pTime)
+#         pTime = cTime
+#         cv2.putText(img, str(int(fps)), (15,32), cv2.FONT_HERSHEY_PLAIN, 3, (255,0,0), 3)        
 
-        cv2.imshow("image", img)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-
+#         cv2.imshow("image", img)
+#         if cv2.waitKey(1) & 0xFF == ord('q'):
+#             break
 
 
-if __name__ == "__main__":
-    main()
+
+
+# if __name__ == "__main__":
+#     main()

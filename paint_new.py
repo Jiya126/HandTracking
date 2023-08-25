@@ -3,6 +3,8 @@ import numpy as np
 import time
 import os
 import handTrackModule as htm
+from tkinter import *
+from PIL import Image, ImageTk
 
 #######################
 brushThickness = 15
@@ -10,7 +12,11 @@ eraserThickness = 50
 drawColor = (255, 0, 255)
 eraserColor = (0,0,0)
 holdColor = (255,255,255)
-rectangle_height = 30
+strip_height = 100
+button_x = 1150
+button_y = 10
+overlay_x = 10  
+overlay_y = 10
 ########################
 
 def paintScreen():
@@ -21,6 +27,12 @@ def paintScreen():
     detector = htm.handDetector()
     xp, yp = 0, 0
     imgCanvas = np.zeros((720, 1280, 3), np.uint8)
+
+    overlay_image = cv2.imread('Group 7.png')
+    overlay_width = 200  
+    overlay_height = 150 
+    overlay_image = cv2.resize(overlay_image, (overlay_width, overlay_height))
+
 
     while True:
 
@@ -41,7 +53,7 @@ def paintScreen():
             fingers = detector.detectUp()
             
             # Eraser mode
-            if fingers[1] and fingers[2] and fingers[3]:
+            if fingers[1] and fingers[2]:
                 xp, yp = 0, 0
                 cv2.rectangle(img, (x1, y1 - eraserThickness), (x2, y2 + eraserThickness), eraserColor, cv2.FILLED)
                 if xp == 0 and yp == 0:
@@ -73,18 +85,10 @@ def paintScreen():
         img = cv2.bitwise_and(img,imgInv)
         img = cv2.bitwise_or(img,imgCanvas)
 
+        
+        img[overlay_y:overlay_y+overlay_height, overlay_x:overlay_x+overlay_width] = overlay_image
 
-        #adding white foreground, top
-        frame_width = int(cap.get(3))
-        white_rect = np.ones((rectangle_height, frame_width, 3), dtype=np.uint8) * 255
-        overlay = cv2.imread('Group 6.png')
-        overlay = cv2.resize(overlay, (frame_width, rectangle_height))
-        combined_frame = np.vstack((white_rect, overlay))
-        result_frame = img.copy()
-        result_frame[0:rectangle_height, 0:frame_width] = combined_frame
-
-
-        ret, buffer = cv2.imencode('.jpg', result_frame)
+        ret, buffer = cv2.imencode('.jpg', img)
         frame = buffer.tobytes()
         yield (b'--frame\r\n'
                  b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
